@@ -11,7 +11,6 @@ import * as Joi from 'joi';
       envFilePath: '.env',
       isGlobal: true,
       validationSchema: Joi.object({
-        GOOGLE_APPLICATION_CREDENTIALS: Joi.string().required(),
         GOOGLE_PROJECT_ID: Joi.string().required(),
       }),
     }),

@@ -13,4 +13,4 @@ async function bootstrap(server) {
 
 const server = express();
 bootstrap(server);
-http('Notes-App-Backend', server);
+http('NotesApp', server);
