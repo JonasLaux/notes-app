@@ -1,1 +1,1 @@
-service_account_names_name = "notes-app-sa"
+service_account_name = "notes-app-sa"

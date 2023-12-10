@@ -5,7 +5,7 @@ variables:
   FUNCTION_NAME: notes-app-backend
   FUNCTIONS_DIR: $CI_PROJECT_DIR/$FUNCTION_NAME
   GCP_REGION: europe-west3
-  NOTES_BACKEND_SA: notes-app-service-acc
+  NOTES_BACKEND_SA: notes-app-sa
 
 
 # Stages
@@ -20,7 +20,7 @@ test:
     - cd $FUNCTIONS_DIR
     - yarn --frozen-lockfile
     - yarn lint
-    - yarn test:unit
+    - yarn test
 
 
 deploy:
