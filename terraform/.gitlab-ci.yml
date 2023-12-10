@@ -34,8 +34,6 @@ plan:
     name: plan
     paths:
       - ${TF_ROOT}/plan.cache
-    reports:
-      terraform: ${TF_ROOT}/plan.json
 
 apply:
   before_script:
