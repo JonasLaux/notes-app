@@ -23,7 +23,7 @@ stages:
   - plan
   - apply
 
-development_plan:
+plan:
   before_script:
     - *gcloud_auth_script_template
   stage: apply
@@ -37,7 +37,7 @@ development_plan:
     reports:
       terraform: ${TF_ROOT}/plan.json
 
-development_apply:
+apply:
   before_script:
     - *gcloud_auth_script_template
   environment: development
