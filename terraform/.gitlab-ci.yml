@@ -1,0 +1,49 @@
+default:
+  image:
+    name: registry.gitlab.com/gitlab-org/terraform-images/stable:latest
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  cache:
+    key: state_cache
+    paths:
+      - ${TF_ROOT}/.terraform
+
+variables:
+  TF_ROOT: ${CI_PROJECT_DIR}/terraform
+  TF_ADDRESS: ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/default
+
+
+.gcloud_auth_script_template: &gcloud_auth_script_template
+  - cd ${TF_ROOT}
+  - echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp_service_account_key.json
+  - export GOOGLE_APPLICATION_CREDENTIALS=gcp_service_account_key.json
+
+stages:
+  - plan
+  - apply
+
+development_plan:
+  before_script:
+    - *gcloud_auth_script_template
+  stage: apply
+  script:
+    - gitlab-terraform validate
+    - gitlab-terraform plan -var-file=environments/production/vars.tfvars
+  artifacts:
+    name: plan
+    paths:
+      - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
+
+development_apply:
+  before_script:
+    - *gcloud_auth_script_template
+  environment: development
+  stage: apply
+  when: manual
+  dependencies:
+    - plan
+  script:
+    - gitlab-terraform apply
