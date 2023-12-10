@@ -1,0 +1,45 @@
+default:
+  image: google/cloud-sdk:slim
+
+variables:
+  FUNCTION_NAME: notes-app-backend
+  FUNCTIONS_DIR: $CI_PROJECT_DIR/$FUNCTIONS_DIR
+  GCP_REGION: europe-west3
+  NOTES_BACKEND_SA: notes-app-service-acc
+
+
+# Stages
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  image: node:hydrogen
+  script:
+    - cd $FUNCTIONS_DIR
+    - yarn --frozen-lockfile
+    - yarn lint
+    - yarn test:unit
+
+
+deploy:
+  stage: deploy
+  before_script:
+    - echo "$GCP_SERVICE_ACCOUNT_KEY" > gcp_service_account_key.json
+    - export GOOGLE_APPLICATION_CREDENTIALS=gcp_service_account_key.json
+    - gcloud auth login --cred-file=${GOOGLE_APPLICATION_CREDENTIALS}
+    - gcloud config set project $GCP_PROJECT_ID
+  script:
+    - cd $FUNCTIONS_DIR
+    - >
+      gcloud functions deploy $FUNCTION_NAME
+      --source . --trigger-http --allow-unauthenticated
+      --runtime=nodejs20 --gen2 --region=$GCP_REGION
+      --entry-point=Notes-App-Backend
+      --service-account=$NOTES_BACKEND_SA@$GCP_PROJECT_ID.iam.gserviceaccount.com
+      --run-service-account=$NOTES_BACKEND_SA@$GCP_PROJECT_ID.iam.gserviceaccount.com
+      --set-env-vars NODE_ENV=production
+      --memory=1024MB
+  only:
+    - main

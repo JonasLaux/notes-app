@@ -1,0 +1,18 @@
+rollout-infrastructure:
+  trigger:
+    include:
+      - local: terraform/.gitlab-ci.yml
+  rules:
+    - changes:
+        - terraform/**/*
+      when: always
+  allow_failure: true
+
+deploy-functions:
+  trigger:
+    include:
+      - local: notes-app-backend/.gitlab-ci.yml
+  only:
+    changes:
+      - notes-app-backend/**/*
+  allow_failure: true
