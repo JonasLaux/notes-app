@@ -41,5 +41,3 @@ deploy:
       --run-service-account=$NOTES_BACKEND_SA@$GCP_PROJECT_ID.iam.gserviceaccount.com
       --set-env-vars NODE_ENV=production
       --memory=1024MB
-  only:
-    - main
