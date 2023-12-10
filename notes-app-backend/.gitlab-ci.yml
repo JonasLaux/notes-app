@@ -3,7 +3,7 @@ default:
 
 variables:
   FUNCTION_NAME: notes-app-backend
-  FUNCTIONS_DIR: $CI_PROJECT_DIR/$FUNCTIONS_DIR
+  FUNCTIONS_DIR: $CI_PROJECT_DIR/$FUNCTION_NAME
   GCP_REGION: europe-west3
   NOTES_BACKEND_SA: notes-app-service-acc
 
